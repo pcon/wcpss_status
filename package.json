@@ -4,14 +4,16 @@
   "description": "A status API for the Wake County Public School System",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint-js": "./node_modules/.bin/eslint scripts/**/*.js",
+    "lint": "npm run lint-js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pcon/wcpss_status.git"
   },
   "keywords": [
-    "wcpss"
+    "wcpss",
+    "wake county"
   ],
   "author": "Patrick Connelly (patrick@connelly.dev)",
   "license": "GPL-3.0-or-later",

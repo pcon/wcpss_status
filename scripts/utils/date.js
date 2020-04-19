@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const moment = require('moment');
 const moment_business = require('moment-business');
 
@@ -35,6 +36,26 @@ function isWeekendDate(date) {
 }
 
 /**
+ * If the date is in the same year
+ * @param {Number} year A year
+ * @param {String} date A date
+ * @returns {Boolean} If the date and the year are the same
+ */
+function isSameYear(year, date) {
+    return moment(date).isSame(moment().year(year), 'year');
+}
+
+/**
+ * If the date is not in the same year
+ * @param {Number} year A year
+ * @param {String} date A date
+ * @returns {Boolean} If the date and the year are not the same
+ */
+function isNotSameYear(year, date) {
+    return !isSameYear(year, date);
+}
+
+/**
  * Filters out dates based on the filter method
  * @param {String[]} dates An array of date strings
  * @param {Function} filter The filter to run
@@ -47,10 +68,15 @@ function filterDates(dates, filter) {
 /**
  * Checks to see if a date is valid and returns an array of invalid dates
  * @param {String[]} dates An array of date strings
+ * @param {Number} year The year
  * @returns {String[]} An array of invalid dates
  */
-function getInvalidDates(dates) {
-    return filterDates(dates, isInvalidDate);
+function getInvalidDates(dates, year) {
+    const isNotSameYear_bound = isNotSameYear.bind(null, year);
+    const invalid_dates = filterDates(dates, isInvalidDate);
+    const wrong_year = filterDates(lodash.difference(dates, invalid_dates), isNotSameYear_bound);
+
+    return lodash.union(invalid_dates, wrong_year);
 }
 
 /**
@@ -65,6 +91,9 @@ function getWeekendDates(dates) {
 module.exports = {
     filterDates: filterDates,
     isValidDate: isValidDate,
+    isInvalidDate: isInvalidDate,
+    isSameYear: isSameYear,
+    isNotSameYear: isNotSameYear,
     getInvalidDates: getInvalidDates,
     getWeekendDates: getWeekendDates
 };
