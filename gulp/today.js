@@ -9,7 +9,6 @@ function today() {
     return new Promise(function (resolve, reject) {
         helper_today.getSchedule()
             .then(function (schedule) {
-                console.log(schedule);
                 files.writeData(schedule, 'index.json', 'api/today')
                     .then(resolve)
                     .catch(reject);
