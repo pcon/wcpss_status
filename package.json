@@ -4,7 +4,7 @@
   "description": "A status API for the Wake County Public School System",
   "main": "gulpfile.js",
   "scripts": {
-    "lint-js": "./node_modules/.bin/eslint scripts/**/*.js",
+    "lint-js": "./node_modules/.bin/eslint gulpfile.js gulp/**/*.js scripts/**/*.js",
     "lint": "npm run lint-js"
   },
   "repository": {
