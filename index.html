@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+        <title>Wake County Public School System API</title>
+        <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Wake County Public School System API</h1>
+            <p class="flow-text">This site is designed to provide an API to give information about if school is in session
+                or not for a given day. The data on this site is regenerated nightly at 12:05am ET. Below is a listing of
+                active endpoints and their usage.</p>
+        </div>
+        <div class="container">
+            <ul class="collection">
+                <li>
+                    <div class="valign-wrapper">
+                        <a href="/wcpss_status/api/today/" class="right btn-small">GET</a>
+                        <code style="margin-left: 1em;">/api/today/</code>
+                        <span style="margin-left: 1em;">Gets the status of today</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
