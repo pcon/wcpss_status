@@ -8,7 +8,7 @@ const constants = require('./constants');
  * @returns {Object} A gulp task
  */
 function static() {
-    const src_path = path.join(__dirname, '..', 'html') + '/*';
+    const src_path = path.join(__dirname, '..', 'html') + '/**';
     const dest_path = path.join(__dirname, '..', constants.ROOT);
 
     return gulp.src(src_path).pipe(gulp.dest(dest_path));
