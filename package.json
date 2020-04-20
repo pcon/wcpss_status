@@ -6,7 +6,8 @@
   "scripts": {
     "build": "./node_modules/.bin/gulp",
     "lint-js": "./node_modules/.bin/eslint gulpfile.js gulp/**/*.js scripts/**/*.js",
-    "lint": "npm run lint-js"
+    "lint-yaml": "./node_modules/.bin/yamllint .github/**/*.yml",
+    "lint": "npm run lint-js && npm run lint-yaml"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "jsonfile": "^6.0.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "moment-business": "^3.0.1"
+    "moment-business": "^3.0.1",
+    "yaml-lint": "^1.2.4"
   }
 }
