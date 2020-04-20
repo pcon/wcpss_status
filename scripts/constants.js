@@ -1,3 +1,5 @@
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 const MODIFIED = 'modified';
 const TRADITIONAL = 'traditional';
 const YEAR_ROUND = 'yearround';
@@ -85,6 +87,7 @@ const DAY_FORMAT = {
 module.exports = {
     CALENDAR_TYPES: CALENDAR_TYPES,
     CANCELLATIONS: CANCELLATIONS,
+    DATE_FORMAT: DATE_FORMAT,
     DAY_FORMAT: DAY_FORMAT,
     DELAYS: DELAYS,
     EOQ: EOQ,

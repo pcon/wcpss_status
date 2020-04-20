@@ -5,6 +5,27 @@ const utils_generic = require('./generic');
 const utils_path = require('./path');
 
 /**
+ * Makes the directory
+ * @param {String} dir The directory path
+ * @returns {Promise} A promise for when the directory is made
+ */
+function makeDirectory(dir) {
+    return new Promise(function (resolve, reject) {
+        const opts = {
+            recursive: true
+        };
+
+        fs.mkdir(dir, opts, function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+/**
  * Reads a json file
  * @param {String} path The path
  * @returns {Promise} A promise for the files data
@@ -12,6 +33,24 @@ const utils_path = require('./path');
 function readJSONFile(path) {
     return new Promise(function (resolve, reject) {
         jsonfile.readFile(path, function (err, data) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+/**
+ * Writes a json file
+ * @param {String} path The path
+ * @param {Object} data The data
+ * @returns {Promise} A promise for when the file has been written
+ */
+function writeJSONFile(path, data) {
+    return new Promise(function (resolve, reject) {
+        jsonfile.writeFile(path, data, function (err) {
             if (err) {
                 reject(err);
             } else {
@@ -50,5 +89,7 @@ function listYears(calendar_type) {
 
 module.exports = {
     listYears: listYears,
-    readJSONFile: readJSONFile
+    makeDirectory: makeDirectory,
+    readJSONFile: readJSONFile,
+    writeJSONFile: writeJSONFile
 };
