@@ -9,6 +9,8 @@ lodash.forEach(constants.CALENDAR_TYPES, function (value, key) {
     promises.push(utils.checks.checkCalendars(key));
 });
 
+promises.push(utils.checks.checkExceptionFiles());
+
 Promise.allSettled(promises).then(function (results) {
     var errors = [];
 

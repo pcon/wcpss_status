@@ -1,4 +1,3 @@
-const jsonfile = require('jsonfile');
 const lodash = require('lodash');
 
 const constants = require('../constants');
@@ -31,6 +30,46 @@ function checkDates(data, year, info, resolve, reject, include_weekend=true) {
 }
 
 /**
+ * Checks a file to make sure that an array exists and the data is correct
+ * @param {String} path The file path
+ * @param {Number} year The year
+ * @param {Boolean} include_weekend If weekend should be considered an error condition
+ * @returns {Promise} A promise for when the file has been checked
+ */
+function checkArrayFile(path, year, include_weekend) {
+    return new Promise(function (resolve, reject) {
+        utils_files.readJSONFile(path)
+            .then(function (data) {
+                if (!lodash.isArray(data)) {
+                    reject(new Error(`${path} provided non array data`));
+                } else {
+                    checkDates(data, year, path, resolve, reject, include_weekend);
+                }
+            })
+            .catch(reject);
+    });
+}
+
+/**
+ *
+ * @param {String} path The path to check
+ * @returns {Promise} A promise for when the object file has been handled
+ */
+function checkObjectFile(path) {
+    return new Promise(function (resolve, reject) {
+        utils_files.readJSONFile(path)
+            .then(function (data) {
+                if (!lodash.isObject(data)) {
+                    reject(`${path} provided non object data`);
+                } else {
+                    resolve(data);
+                }
+            })
+            .catch(reject);
+    });
+}
+
+/**
  * Checks to see if all the dates in the file are valid
  * This includes not only a format check but that no dates are on weekends
  * @param {String} path The path to the file
@@ -38,17 +77,7 @@ function checkDates(data, year, info, resolve, reject, include_weekend=true) {
  * @returns {Promise} A promise that all the dates in the file are correct
  */
 function checkDatesFile(path, year) {
-    return new Promise(function (resolve, reject) {
-        jsonfile.readFile(path, function (err, data) {
-            if (err) {
-                reject(err);
-            } else if (!lodash.isArray(data)) {
-                reject(new Error(`${path} provided non array data`));
-            } else {
-                checkDates(data, year, path, resolve, reject);
-            }
-        });
-    });
+    return checkArrayFile(path, year, false);
 }
 
 /**
@@ -58,19 +87,8 @@ function checkDatesFile(path, year) {
  * @returns {Promise} A promise for when the makeup days have been checked
  */
 function checkTraditionalMakeupDays(calendar_type, year) {
-    return new Promise(function (resolve, reject) {
-        const path = utils_path.getPath(calendar_type, year, constants.MAKEUP);
-
-        jsonfile.readFile(path, function (err, data) {
-            if (err) {
-                reject(err);
-            } else if (!lodash.isArray(data)) {
-                reject(new Error(`${path} provided non array data`));
-            } else {
-                checkDates(data, year, path, resolve, reject, false);
-            }
-        });
-    });
+    const path = utils_path.getPath(calendar_type, year, constants.MAKEUP);
+    return checkArrayFile(path, year, true);
 }
 
 /**
@@ -83,12 +101,8 @@ function checkTraditionalSpecialDays(calendar_type, year) {
     return new Promise(function (resolve, reject) {
         const path = utils_path.getPath(calendar_type, year, constants.SPECIALS);
 
-        jsonfile.readFile(path, function (err, data) {
-            if (err) {
-                reject(err);
-            } else if (!lodash.isObject(data)) {
-                reject(new Error(`${path} provided non object data`));
-            } else {
+        checkObjectFile(path)
+            .then(function (data) {
                 var errors = [];
 
                 lodash.forEach(data, function (value, key) {
@@ -114,8 +128,8 @@ function checkTraditionalSpecialDays(calendar_type, year) {
                 } else {
                     resolve();
                 }
-            }
-        });
+            })
+            .catch(reject);
     });
 }
 
@@ -161,16 +175,13 @@ function checkTraditionalYear(calendar_type, year) {
  * Checks to make sure all the dates for tracks are valid
  * @param {String} path The path to the track-out file
  * @param {Number} year The year
+ * @param {Boolean} include_weekend If the weekend should be included as an error
  * @returns {Promise} A promise for when the track-out file has been checked
  */
-function checkTracks(path, year) {
+function checkTracks(path, year, include_weekend=true) {
     return new Promise(function (resolve, reject) {
-        jsonfile.readFile(path, function (err, data) {
-            if (err) {
-                reject(err);
-            } else if (!lodash.isObject(data)) {
-                reject(new Error(`${path} provided non object data`));
-            } else {
+        checkObjectFile(path)
+            .then(function (data) {
                 var errors = [];
 
                 constants.TRACKS.forEach(function (track) {
@@ -188,7 +199,7 @@ function checkTracks(path, year) {
 
                     checkDates(track_data, year, `${path} - ${track}`, function () {}, function (check_errors) {
                         errors.push(check_errors);
-                    });
+                    }, include_weekend);
                 });
 
                 if (!lodash.isEmpty(errors)) {
@@ -196,8 +207,8 @@ function checkTracks(path, year) {
                 } else {
                     resolve();
                 }
-            }
-        });
+            })
+            .catch(reject);
     });
 }
 
@@ -210,39 +221,9 @@ function checkYearRoundMakeupDays(year) {
     return new Promise(function (resolve, reject) {
         const path = utils_path.getPath(constants.YEAR_ROUND, year, constants.MAKEUP);
 
-        jsonfile.readFile(path, function (err, data) {
-            if (err) {
-                reject(err);
-            } else if (!lodash.isObject(data)) {
-                reject(new Error(`${path} provided non object data`));
-            } else {
-                var errors = [];
-
-                constants.TRACKS.forEach(function (track) {
-                    const track_data = lodash.get(data, track);
-
-                    if (!track_data) {
-                        errors.push(`Unable to find ${track} in ${path}`);
-                        return;
-                    }
-
-                    if (!lodash.isArray(track_data)) {
-                        errors.push(`${track} in ${path} is not an array`);
-                        return;
-                    }
-
-                    checkDates(track_data, year, `${path} - ${track}`, function () {}, function (check_errors) {
-                        errors.push(check_errors);
-                    }, false);
-                });
-
-                if (!lodash.isEmpty(errors)) {
-                    reject(errors);
-                } else {
-                    resolve();
-                }
-            }
-        });
+        checkTracks(path, year, false)
+            .then(resolve)
+            .catch(reject);
     });
 }
 
@@ -312,6 +293,75 @@ function checkYear(calendar_type, year) {
 }
 
 /**
+ * Checks that the delays file is properly formatted
+ * @returns {Promise} A promise for when the check has completed
+ */
+function checkDelaysFile() {
+    return new Promise(function (resolve, reject) {
+        const path = utils_path.getPath('', '', constants.DELAYS);
+
+        checkObjectFile(path)
+            .then(function (data) {
+                var errors = [];
+
+                lodash.forEach(data, function (value, key) {
+                    if (utils_date.isInvalidDate(key)) {
+                        errors.push(`${path} - Key ${key} is not a valid date`);
+                    } else if (utils_date.isWeekendDate(key)) {
+                        errors.push(`${path} - Key ${key} is on a weekend`);
+                    } else if (typeof value !== 'number') {
+                        errors.push(`${path} - Value for ${key} "${value}" is not a number`);
+                    }
+                });
+
+                if (!lodash.isEmpty(errors)) {
+                    reject(errors);
+                } else {
+                    resolve();
+                }
+            })
+            .catch(reject);
+    });
+}
+
+/**
+ * Checks the exception files to make sure they're properly formatted
+ * @returns {Promise} A promise for when the global exception files are checked
+ */
+function checkExceptionFiles() {
+    return new Promise(function (resolve, reject) {
+        var promises = [];
+
+        constants.GLOBAL_EXCEPTIONS.forEach(function (exception) {
+            const path = utils_path.getPath('', '', exception);
+
+            if (exception !== constants.DELAYS) {
+                promises.push(checkArrayFile(path, undefined, true));
+            }
+        });
+
+        promises.push(checkDelaysFile());
+
+        Promise.allSettled(promises)
+            .then(function (results) {
+                var errors = [];
+
+                results.forEach(function (result) {
+                    if (result.status === 'rejected') {
+                        errors.push(result.reason);
+                    }
+                });
+
+                if (!lodash.isEmpty(errors)) {
+                    reject(errors);
+                } else {
+                    resolve();
+                }
+            });
+    });
+}
+
+/**
  * Checks to make sure all the data for the calendar is correct
  * @param {String} calendar_type The calendar type name
  * @returns {Promise} A promise for when the calendar type has been checked
@@ -347,5 +397,6 @@ function checkCalendars(calendar_type) {
 }
 
 module.exports = {
+    checkExceptionFiles: checkExceptionFiles,
     checkCalendars: checkCalendars
 };

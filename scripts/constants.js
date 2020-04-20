@@ -30,6 +30,11 @@ const SPECIALS_MAP = {
     REPORT_CARD: 'Report Card'
 };
 
+const GLOBAL_EXCEPTIONS = [
+    CANCELLATIONS,
+    DELAYS
+];
+
 const TRACK1 = 'track1';
 const TRACK2 = 'track2';
 const TRACK3 = 'track3';
@@ -85,6 +90,7 @@ module.exports = {
     EOQ: EOQ,
     EXCEPTIONS: EXCEPTIONS,
     FIRST_DAY: FIRST_DAY,
+    GLOBAL_EXCEPTIONS: GLOBAL_EXCEPTIONS,
     HOLIDAYS: HOLIDAYS,
     LAST_DAY: LAST_DAY,
     MAKEUP: MAKEUP,

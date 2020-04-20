@@ -72,8 +72,13 @@ function filterDates(dates, filter) {
  * @returns {String[]} An array of invalid dates
  */
 function getInvalidDates(dates, year) {
-    const isNotSameYear_bound = isNotSameYear.bind(null, year);
     const invalid_dates = filterDates(dates, isInvalidDate);
+
+    if (!year) {
+        return invalid_dates;
+    }
+
+    const isNotSameYear_bound = isNotSameYear.bind(null, year);
     const wrong_year = filterDates(lodash.difference(dates, invalid_dates), isNotSameYear_bound);
 
     return lodash.union(invalid_dates, wrong_year);
@@ -94,6 +99,7 @@ module.exports = {
     isInvalidDate: isInvalidDate,
     isSameYear: isSameYear,
     isNotSameYear: isNotSameYear,
+    isWeekendDate: isWeekendDate,
     getInvalidDates: getInvalidDates,
     getWeekendDates: getWeekendDates
 };

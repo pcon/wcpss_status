@@ -1,7 +1,25 @@
 const fs = require('fs');
+const jsonfile = require('jsonfile');
 
 const utils_generic = require('./generic');
 const utils_path = require('./path');
+
+/**
+ * Reads a json file
+ * @param {String} path The path
+ * @returns {Promise} A promise for the files data
+ */
+function readJSONFile(path) {
+    return new Promise(function (resolve, reject) {
+        jsonfile.readFile(path, function (err, data) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
 
 /**
  * Gets a list of years available for a calendar type
@@ -31,5 +49,6 @@ function listYears(calendar_type) {
 }
 
 module.exports = {
-    listYears: listYears
+    listYears: listYears,
+    readJSONFile: readJSONFile
 };
