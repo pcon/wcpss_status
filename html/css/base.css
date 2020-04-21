@@ -1,3 +1,8 @@
 ul.endpoint_list li {
     margin: 1em 0;
 }
+
+ul.endpoint_list li div.valign-wrapper code,
+ul.endpoint_list li div.valign-wrapper span {
+    margin-left: 1em;
+}
