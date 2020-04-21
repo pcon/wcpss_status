@@ -1,3 +1,4 @@
+const DATE = 'date';
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 const MODIFIED = 'modified';
@@ -87,6 +88,7 @@ const DAY_FORMAT = {
 module.exports = {
     CALENDAR_TYPES: CALENDAR_TYPES,
     CANCELLATIONS: CANCELLATIONS,
+    DATE: DATE,
     DATE_FORMAT: DATE_FORMAT,
     DAY_FORMAT: DAY_FORMAT,
     DELAYS: DELAYS,

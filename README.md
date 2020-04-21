@@ -11,8 +11,8 @@ _Not yet implemented_
 - [X] Add 2019-2020 and 2020-2021 calendar years for all types
 - [X] Add validation for data files
 - [X] Add linting for all scripts
-- [ ] Add endpoint for "today"
-- [ ] Add endpoint for "tomorrow"
+- [X] Add endpoint for "today"
+- [X] Add endpoint for "tomorrow"
 - [ ] Add endpoint for "this week"
 - [ ] Add endpoint for "next week"
 - [ ] Add calendar view
