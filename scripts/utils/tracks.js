@@ -54,7 +54,6 @@ function getYearRoundStatus(date) {
                     tracks[track] = [];
                 });
 
-
                 results.forEach(function (result) {
                     if (result.status !== 'fulfilled') {
                         errors.push(result.reason);
