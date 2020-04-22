@@ -1,15 +1,15 @@
 const files = require('./files');
-const helper_tomorrow = require('../scripts/helpers/tomorrow');
+const helper_nextweek = require('../scripts/helpers/nextweek');
 
 /**
- * Generates today's json data
+ * Generates next week's json data
  * @returns {Promise} A promise for when the task is complete
  */
-function tomorrow() {
+function nextweek() {
     return new Promise(function (resolve, reject) {
-        helper_tomorrow.getSchedule()
+        helper_nextweek.getSchedule()
             .then(function (schedule) {
-                files.writeData(schedule, 'index.json', 'api/tomorrow')
+                files.writeData(schedule, 'index.json', 'api/nextweek')
                     .then(resolve)
                     .catch(reject);
             })
@@ -17,4 +17,4 @@ function tomorrow() {
     });
 }
 
-module.exports = tomorrow;
+module.exports = nextweek;
