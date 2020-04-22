@@ -42,12 +42,14 @@ function getSchedule(date) {
         promises.push(tracks.getTraditionalStatus(constants.TRADITIONAL, date));
         promises.push(tracks.getTraditionalStatus(constants.MODIFIED, date));
         promises.push(tracks.getYearRoundStatus(date));
+        promises.push(tracks.getDelay(date));
 
         Promise.allSettled(promises)
             .then(combineSchedules)
             .then(function (schedule) {
                 const today_schedule = {
                     [constants.DATE]: date,
+                    [constants.DELAYS]: lodash.get(schedule, `${constants.DELAYS}`),
                     [constants.TRADITIONAL]: lodash.get(schedule, `${constants.TRADITIONAL}.${date}`),
                     [constants.MODIFIED]: lodash.get(schedule, `${constants.MODIFIED}.${date}`),
                     [constants.YEAR_ROUND]: lodash.get(schedule, `${constants.YEAR_ROUND}.${date}`)

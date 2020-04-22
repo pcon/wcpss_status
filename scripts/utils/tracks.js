@@ -44,6 +44,9 @@ function getYearRoundStatus(date) {
             promises.push(utils_files.readJSONFile(path));
         });
 
+        const cancellations_path = utils_path.getPath('', '', constants.CANCELLATIONS);
+        promises.push(utils_files.readJSONFile(cancellations_path));
+
         Promise.allSettled(promises)
             .then(function (results) {
                 var errors = [];
@@ -78,7 +81,7 @@ function getYearRoundStatus(date) {
                             var tracks_in_session = {};
 
                             constants.TRACKS.forEach(function (track) {
-                                tracks_in_session[track] = inSession(date, lodash.union(exceptions[track], tracks[track]), makeup_days[track]);
+                                tracks_in_session[track] = inSession(date, lodash.union(exceptions, tracks[track]), makeup_days[track]);
                             });
 
                             resolve({
@@ -108,6 +111,9 @@ function getTraditionalStatus(calendar_type, date) {
             const path = utils_path.getPath(calendar_type, year, exception);
             promises.push(utils_files.readJSONFile(path));
         });
+
+        const cancellations_path = utils_path.getPath('', '', constants.CANCELLATIONS);
+        promises.push(utils_files.readJSONFile(cancellations_path));
 
         Promise.allSettled(promises)
             .then(function (results) {
@@ -141,7 +147,33 @@ function getTraditionalStatus(calendar_type, date) {
     });
 }
 
+/**
+ * Gets the delay for a given day
+ * @param {String} date The date
+ * @returns {Promise} A promise for when the delay has been returned
+ */
+function getDelay(date) {
+    return new Promise(function (resolve, reject) {
+        const file_path = utils_path.getPath('', '', constants.DELAYS);
+
+        utils_files.readJSONFile(file_path)
+            .then(function (delays) {
+                var delay = 0;
+
+                if (lodash.has(delays, date)) {
+                    delay = lodash.get(delays, date);
+                }
+
+                resolve({
+                    [constants.DELAYS]: delay
+                });
+            })
+            .catch(reject);
+    });
+}
+
 module.exports = {
+    getDelay: getDelay,
     getTraditionalStatus: getTraditionalStatus,
     getYearRoundStatus: getYearRoundStatus
 };
