@@ -1,6 +1,6 @@
 # Wake County Public School System (WCPSS) API
 
-This repo provides an API for the WCPSS calendar.  It is built nightly at 12:05 AM (0005) Eastern Time or whenever the repository is updated.
+This repo provides an API for the WCPSS calendar.  It is built nightly at 01:05 AM (0105) Eastern Time or whenever the repository is updated.  I pushed the time an hour later to not have to worry about DST changes.  If you need better granularity, either run it yourself or look at using one of the other forward looking endpoints.
 
 ## Available Endpoints
 
