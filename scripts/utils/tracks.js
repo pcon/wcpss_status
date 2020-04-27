@@ -1,10 +1,12 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const lodash = require('lodash');
 
 const constants = require('../constants');
 const utils_date = require('./date');
 const utils_files = require('./files');
 const utils_path = require('./path');
+
+moment.tz.setDefault(constants.TIMEZONE);
 
 /**
  * Is the class in session

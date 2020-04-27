@@ -1,6 +1,10 @@
 const lodash = require('lodash');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const moment_business = require('moment-business');
+
+const constants = require('../constants');
+
+moment.tz.setDefault(constants.TIMEZONE);
 
 /**
  * If a string is a valid date

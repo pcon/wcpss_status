@@ -1,8 +1,9 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const constants = require('../constants');
 const single_day = require('./singleday');
 
+moment.tz.setDefault(constants.TIMEZONE);
 const tomorrow = moment().add(1, 'day');
 
 /**
