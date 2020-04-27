@@ -7,7 +7,8 @@
     "build": "./node_modules/.bin/gulp",
     "lint-js": "./node_modules/.bin/eslint gulpfile.js gulp/**/*.js scripts/**/*.js",
     "lint-yaml": "./node_modules/.bin/yamllint .github/**/*.yml",
-    "lint": "npm run lint-js && npm run lint-yaml"
+    "lint-md": "./node_modules/.bin/remark --no-stdout -f *.md",
+    "lint": "npm run lint-js && npm run lint-yaml && npm run lint-md"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,20 @@
   "bugs": {
     "url": "https://github.com/pcon/wcpss_status/issues"
   },
-  "homepage": "https://github.com/pcon/wcpss_status#readme",
+  "homepage": "https://pcon.github.io/wcpss_status/",
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-final-newline",
+        false
+      ],
+      [
+        "lint-list-item-indent",
+        "space"
+      ]
+    ]
+  },
   "dependencies": {
     "del": "^5.1.0",
     "eslint": "^6.8.0",
@@ -32,6 +46,10 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-business": "^3.0.1",
+    "remark": "^12.0.0",
+    "remark-cli": "^8.0.0",
+    "remark-lint": "^7.0.0",
+    "remark-preset-lint-recommended": "^4.0.0",
     "yaml-lint": "^1.2.4"
   }
 }

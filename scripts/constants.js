@@ -1,5 +1,6 @@
 const DATE = 'date';
 const DATE_FORMAT = 'YYYY-MM-DD';
+const TIMEZONE = 'America/New_York';
 
 const MODIFIED = 'modified';
 const TRADITIONAL = 'traditional';
@@ -88,8 +89,8 @@ const DAY_FORMAT = {
 module.exports = {
     CALENDAR_TYPES: CALENDAR_TYPES,
     CANCELLATIONS: CANCELLATIONS,
-    DATE: DATE,
     DATE_FORMAT: DATE_FORMAT,
+    DATE: DATE,
     DAY_FORMAT: DAY_FORMAT,
     DELAYS: DELAYS,
     EOQ: EOQ,
@@ -104,6 +105,7 @@ module.exports = {
     SPECIAL_TYPES: SPECIAL_TYPES,
     SPECIALS_MAP: SPECIALS_MAP,
     SPECIALS: SPECIALS,
+    TIMEZONE: TIMEZONE,
     TRACK_OUT: TRACK_OUT,
     TRACK1: TRACK1,
     TRACK2: TRACK2,
