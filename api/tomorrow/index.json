@@ -1,1 +1,1 @@
-{"date":"2020-06-04","delays":0,"traditional":true,"modified":false,"yearround":{"track1":true,"track2":true,"track3":true,"track4":true}}
+{"date":"2020-06-04","delays":0,"traditional":{"in_session":true,"remote":true},"modified":{"in_session":false,"remote":false},"yearround":{"track1":{"in_session":true,"remote":true},"track2":{"in_session":true,"remote":true},"track3":{"in_session":true,"remote":true},"track4":{"in_session":true,"remote":true}}}
