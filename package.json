@@ -5,10 +5,11 @@
   "main": "gulpfile.js",
   "scripts": {
     "build": "./node_modules/.bin/gulp",
+    "lint-data": "node scripts/validate_data.js",
     "lint-js": "./node_modules/.bin/eslint gulpfile.js gulp/**/*.js scripts/**/*.js",
     "lint-yaml": "./node_modules/.bin/yamllint .github/**/*.yml",
     "lint-md": "./node_modules/.bin/remark --no-stdout -f *.md",
-    "lint": "npm run lint-js && npm run lint-yaml && npm run lint-md"
+    "lint": "npm run lint-data && npm run lint-js && npm run lint-yaml && npm run lint-md"
   },
   "repository": {
     "type": "git",

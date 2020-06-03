@@ -16,7 +16,7 @@ const utils_path = require('./path');
  * @param {Boolean} include_weekend If the weekend should be included as invalid
  * @returns {undefined}
  */
-function checkDates(data, year, info, resolve, reject, include_weekend=true) {
+function checkDates(data, year, info, resolve, reject, include_weekend = true) {
     const invalid_dates = utils_date.getInvalidDates(data, year);
     const weekend_dates = utils_date.getWeekendDates(data);
 
@@ -92,6 +92,17 @@ function checkTraditionalMakeupDays(calendar_type, year) {
 }
 
 /**
+ * Checks that the remote days are formatted correctly
+ * @param {String} calendar_type The calendar type
+ * @param {Number} year The year
+ * @returns {Promise} A promise for when the remote days have been checked
+ */
+function checkTraditionalRemoteDays(calendar_type, year) {
+    const path = utils_path.getPath(calendar_type, year, constants.REMOTE);
+    return checkArrayFile(path, year, true);
+}
+
+/**
  * Checks the special days are formatted correctly
  * @param {String} calendar_type The calendar type
  * @param {Number} year The year
@@ -150,6 +161,7 @@ function checkTraditionalYear(calendar_type, year) {
         });
 
         promises.push(checkTraditionalMakeupDays(calendar_type, year));
+        promises.push(checkTraditionalRemoteDays(calendar_type, year));
         promises.push(checkTraditionalSpecialDays(calendar_type, year));
 
         Promise.allSettled(promises)
@@ -178,7 +190,7 @@ function checkTraditionalYear(calendar_type, year) {
  * @param {Boolean} include_weekend If the weekend should be included as an error
  * @returns {Promise} A promise for when the track-out file has been checked
  */
-function checkTracks(path, year, include_weekend=true) {
+function checkTracks(path, year, include_weekend = true) {
     return new Promise(function (resolve, reject) {
         checkObjectFile(path)
             .then(function (data) {
@@ -213,18 +225,37 @@ function checkTracks(path, year, include_weekend=true) {
 }
 
 /**
- * Checks that the makeup days are formatted correctly
+ * Checks that the days are formatted correctly
  * @param {Number} year The year
- * @returns {Promise} A promise for when the makeup days have been checked
+ * @param {String} type The file type
+ * @returns {Promise} A promise for when the days have been checked
  */
-function checkYearRoundMakeupDays(year) {
+function checkYearRoundTrackBasedFile(year, type) {
     return new Promise(function (resolve, reject) {
-        const path = utils_path.getPath(constants.YEAR_ROUND, year, constants.MAKEUP);
+        const path = utils_path.getPath(constants.YEAR_ROUND, year, type);
 
         checkTracks(path, year, false)
             .then(resolve)
             .catch(reject);
     });
+}
+
+/**
+ * Checks that the makeup days are formatted correctly
+ * @param {Number} year The year
+ * @returns {Promise} A promise for when the makeup days have been checked
+ */
+function checkYearRoundMakeupDays(year) {
+    return checkYearRoundTrackBasedFile(year, constants.MAKEUP);
+}
+
+/**
+ * Checks that the remote days are formatted correctly
+ * @param {Number} year The year
+ * @returns {Promise} A promise for when the remote days have been checked
+ */
+function checkYearRoundRemoteDays(year) {
+    return checkYearRoundTrackBasedFile(year, constants.REMOTE);
 }
 
 /**
@@ -247,6 +278,7 @@ function checkYearRoundYear(year) {
             }
         });
 
+        promises.push(checkYearRoundRemoteDays(year));
         promises.push(checkYearRoundMakeupDays(year));
 
         Promise.allSettled(promises)
@@ -278,15 +310,15 @@ function checkYear(calendar_type, year) {
     var promise;
 
     switch (calendar_type) {
-    case constants.MODIFIED:
-    case constants.TRADITIONAL:
-        promise = checkTraditionalYear(calendar_type, year);
-        break;
-    case constants.YEAR_ROUND:
-        promise = checkYearRoundYear(year);
-        break;
-    default:
-        promise = utils_generic.promiseError(`Unknown calendar type '${calendar_type}'`);
+        case constants.MODIFIED:
+        case constants.TRADITIONAL:
+            promise = checkTraditionalYear(calendar_type, year);
+            break;
+        case constants.YEAR_ROUND:
+            promise = checkYearRoundYear(year);
+            break;
+        default:
+            promise = utils_generic.promiseError(`Unknown calendar type '${calendar_type}'`);
     }
 
     return promise;

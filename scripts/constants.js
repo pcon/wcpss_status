@@ -6,6 +6,7 @@ const MODIFIED = 'modified';
 const TRADITIONAL = 'traditional';
 const YEAR_ROUND = 'yearround';
 
+const CALENDAR_OUT = 'calendarout';
 const CANCELLATIONS = 'cancellations';
 const DELAYS = 'delays';
 const EOQ = 'EOQ';
@@ -14,6 +15,7 @@ const FIRST_DAY = 'FIRST_DAY';
 const HOLIDAYS = 'holidays';
 const LAST_DAY = 'LAST_DAY';
 const MAKEUP = 'makeup';
+const REMOTE = 'remote';
 const REPORT_CARD = 'REPORT_CARD';
 const SPECIALS = 'specials';
 const TRACK_OUT = 'trackout';
@@ -61,6 +63,7 @@ const CALENDAR_TYPES = {
     },
     [TRADITIONAL]: {
         [EXCEPTIONS]: [
+            CALENDAR_OUT,
             HOLIDAYS,
             VACATIONS,
             WORKDAYS
@@ -87,6 +90,7 @@ const DAY_FORMAT = {
 };
 
 module.exports = {
+    CALENDAR_OUT: CALENDAR_OUT,
     CALENDAR_TYPES: CALENDAR_TYPES,
     CANCELLATIONS: CANCELLATIONS,
     DATE_FORMAT: DATE_FORMAT,
@@ -101,6 +105,7 @@ module.exports = {
     LAST_DAY: LAST_DAY,
     MAKEUP: MAKEUP,
     MODIFIED: MODIFIED,
+    REMOTE: REMOTE,
     REPORT_CARD: REPORT_CARD,
     SPECIAL_TYPES: SPECIAL_TYPES,
     SPECIALS_MAP: SPECIALS_MAP,

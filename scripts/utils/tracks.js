@@ -9,6 +9,16 @@ const utils_path = require('./path');
 moment.tz.setDefault(constants.TIMEZONE);
 
 /**
+ * Is the class remote
+ * @param {String} date The date
+ * @param {String[]} remote_days A list of remote days
+ * @returns {Boolean} If the class is remote
+ */
+function isRemote(date, remote_days) {
+    return lodash.includes(remote_days, date);
+}
+
+/**
  * Is the class in session
  * @param {String} date The date
  * @param {String[]} exceptions An array of exception days
@@ -80,17 +90,24 @@ function getYearRoundStatus(date) {
                     const makeup_path = utils_path.getPath(calendar_type, year, constants.MAKEUP);
                     utils_files.readJSONFile(makeup_path)
                         .then(function (makeup_days) {
-                            var tracks_in_session = {};
+                            const remote_path = utils_path.getPath(calendar_type, year, constants.REMOTE);
+                            utils_files.readJSONFile(remote_path)
+                                .then(function (remote_days) {
+                                    var tracks_in_session = {};
 
-                            constants.TRACKS.forEach(function (track) {
-                                tracks_in_session[track] = inSession(date, lodash.union(exceptions, tracks[track]), makeup_days[track]);
-                            });
+                                    constants.TRACKS.forEach(function (track) {
+                                        tracks_in_session[track] = {
+                                            in_session: inSession(date, lodash.union(exceptions, tracks[track]), makeup_days[track]),
+                                            remote: isRemote(date, remote_days[track])
+                                        };
+                                    });
 
-                            resolve({
-                                [calendar_type]: {
-                                    [date]: tracks_in_session
-                                }
-                            });
+                                    resolve({
+                                        [calendar_type]: {
+                                            [date]: tracks_in_session
+                                        }
+                                    });
+                                });
                         });
                 }
             });
@@ -137,11 +154,27 @@ function getTraditionalStatus(calendar_type, date) {
                     const makeup_path = utils_path.getPath(calendar_type, year, constants.MAKEUP);
                     utils_files.readJSONFile(makeup_path)
                         .then(function (makeup_days) {
-                            resolve({
-                                [calendar_type]: {
-                                    [date]: inSession(date, exceptions, makeup_days)
-                                }
-                            });
+                            const remote_path = utils_path.getPath(calendar_type, year, constants.REMOTE);
+                            utils_files.readJSONFile(remote_path)
+                                .then(function (remote_days) {
+                                    resolve({
+                                        [calendar_type]: {
+                                            [date]: {
+                                                in_session: inSession(date, exceptions, makeup_days),
+                                                remote: isRemote(date, remote_days)
+                                            }
+                                        }
+                                    });
+                                }).catch(function () {
+                                    resolve({
+                                        [calendar_type]: {
+                                            [date]: {
+                                                in_session: inSession(date, exceptions, makeup_days),
+                                                remote: false
+                                            }
+                                        }
+                                    });
+                                });
                         })
                         .catch(reject);
                 }
